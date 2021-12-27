@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CatalogApplication.Dtos;
+using CatalogApplication.Entities;
 using CatalogApplication.Extensions;
 using CatalogApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,22 @@ namespace CatalogApplication.Controllers
                 return NotFound();
 
             return item.AsItemDto();
+        }
+
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto itemDto)
+        {
+            var item = new Item()
+            {
+                Id = Guid.NewGuid(),
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                CreatedDate = DateTimeOffset.UtcNow
+            };
+            
+            _repository.CreateItem(item);
+
+            return CreatedAtAction(nameof(GetItem), new {id = item.Id}, item.AsItemDto());
         }
     }
 }
