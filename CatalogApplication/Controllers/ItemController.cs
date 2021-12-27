@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using CatalogApplication.Entities;
+using System.Linq;
+using CatalogApplication.Dtos;
 using CatalogApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,20 +19,36 @@ namespace CatalogApplication.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Item> GeItems()
+        public IEnumerable<ItemDto> GeItems()
         {
-            return _repository.GetItems();
+            var itemDtoList = _repository.GetItems().Select(item => new ItemDto()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Price = item.Price,
+                CreatedDate = item.CreatedDate
+            });
+            
+            return itemDtoList;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Item> GetItem(Guid id)
+        public ActionResult<ItemDto> GetItem(Guid id)
         {
             var item = _repository.GetItem(id);
 
             if (item is null)
                 return NotFound();
             
-            return item;
+            var itemDto = new ItemDto()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Price = item.Price,
+                CreatedDate = item.CreatedDate
+            };
+            
+            return itemDto;
         }
     }
 }
