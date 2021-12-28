@@ -10,5 +10,7 @@ namespace CatalogApplication.Repositories
         public Item GetItem(Guid id);
         public void CreateItem(Item item);
         public void UpdateItem(Item item);
+
+        public void DeleteItem(Guid id);
     }
 }
